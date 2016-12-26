@@ -25,9 +25,7 @@ mkdir /var/www/$DOMAIN
 cat >>/etc/nginx/conf.d/$DOMAIN.conf<<EOL
 server {
         listen   80; ## listen for ipv4
-        listen   [::]:80; ## listen for ipv6
         listen   443 ssl;
-        listen   [::]:443 ipv6only=on ssl;
 
         ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
         ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
