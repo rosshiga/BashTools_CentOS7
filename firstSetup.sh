@@ -1,13 +1,13 @@
 #!/bin/sh
 ####################
-# A minimal CentOS 7 Deployment Script 
+# A minimal CentOS 7 Deployment Script
 #
 #
 #
 #
 USER="ross"
 TIMEZONE="Pacific/Honolulu"
-PACKAGES="wget"
+PACKAGES="wget "
 SSHKEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCls7blTjrl6awhBw0VdwqvrmdedaAm9+bF7dViHW/AbA4xXl34vhyJej4dNQO2S8hYxVeikpk4q2vfAA3I6N4lzxy7oISggu9cIBMlmFhRDrkM2SeuIkE7J+SP9Azx4m9CBHrULRfYfAShnAFHsr2MqqFKt1vKXxSi9MlQ1gBsz/RNg9WJKXOmtKZOkmZm92hGL6QhZPQKK6R5pL2M9c/OssUCTDq8qA0EvYMYyP/fLmNSKogGGajFtMlGloIyCNpBis9O7m5Bggxd8uMfLyLfuM6V02MOwPAe8gol52t+TPiEf5J14rwKxu7JkRQ6eTVbCk+EuKaH6APLiDuw7J5Z Asterisk-AWS"
 ###################
 
@@ -24,7 +24,7 @@ usermod -aG wheel $USER
 passwd -d $USER
 chage -d 0 $USER
 
-passwd -l root # Lock root login 
+passwd -l root # Lock root login
 
 # Setup ssh public key auth
 mkdir -p /home/$USER/.ssh
@@ -47,12 +47,12 @@ PubkeyAuthentication yes
 EOL
 
 #Install epel repo and update packages
-yum install -y epel-release 
+yum install -y epel-release
 yum -y update
 yum install -y yum-cron fail2ban $PACKAGES
 
 #Enable automatic updates with yum-cron
-sed -i -e "s/apply_updates = no/apply_updates = yes/" /etc/yum/yum-cron.conf 
+sed -i -e "s/apply_updates = no/apply_updates = yes/" /etc/yum/yum-cron.conf
 
 
 #Use Google DNS

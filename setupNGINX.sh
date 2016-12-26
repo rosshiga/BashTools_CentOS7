@@ -18,3 +18,5 @@ firewall-cmd --reload
 rm -f /usr/share/nginx/html/index.html
 hostname > /usr/share/nginx/html/index.html
 echo -n " is working" >> /usr/share/nginx/html/index.html
+
+mkdir /var/www
