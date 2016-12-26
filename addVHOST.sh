@@ -50,4 +50,6 @@ server {
 EOL
 
 
+echo -n "$DOMAIN is working" >> /usr/share/nginx/html/index.html
+
 systemctl start nginx
