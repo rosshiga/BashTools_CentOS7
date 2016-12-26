@@ -1,7 +1,9 @@
 #!/bin/sh
 ####################
 # A minimal CentOS 7 Deployment Script 
-# Options
+#
+#
+#
 #
 USER="ross"
 TIMEZONE="Pacific/Honolulu"
@@ -9,27 +11,33 @@ PACKAGES="wget"
 SSHKEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCls7blTjrl6awhBw0VdwqvrmdedaAm9+bF7dViHW/AbA4xXl34vhyJej4dNQO2S8hYxVeikpk4q2vfAA3I6N4lzxy7oISggu9cIBMlmFhRDrkM2SeuIkE7J+SP9Azx4m9CBHrULRfYfAShnAFHsr2MqqFKt1vKXxSi9MlQ1gBsz/RNg9WJKXOmtKZOkmZm92hGL6QhZPQKK6R5pL2M9c/OssUCTDq8qA0EvYMYyP/fLmNSKogGGajFtMlGloIyCNpBis9O7m5Bggxd8uMfLyLfuM6V02MOwPAe8gol52t+TPiEf5J14rwKxu7JkRQ6eTVbCk+EuKaH6APLiDuw7J5Z Asterisk-AWS"
 ###################
 
-timedatectl set-timezone $TIMEZONE
-authconfig --passalgo=sha512 --update
 
+timedatectl set-timezone $TIMEZONE #Set timezone
+authconfig --passalgo=sha512 --update #Set password hash to sha512 from MD5
+
+
+#Create specifed USER from options with sudo privs
 useradd $USER -c "Administrator"
 usermod -aG wheel $USER
-sudo passwd -d $USER
 
-
-passwd -l root
+#Blank user password, force expire
+passwd -d $USER
 chage -d 0 $USER
 
+passwd -l root # Lock root login 
+
+# Setup ssh public key auth
 mkdir -p /home/$USER/.ssh
-
 echo $SSHKEY > /home/$USER/.ssh/authorized_keys
-
 chown $USER:$USER -R /home/$USER/.ssh
 chmod 700 /home/$USER/.ssh
 chmod 600 /home/$USER/.ssh/authorized_keys
 
+
+#Disable SSH password auth
 sed -i -e "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config
 
+#Disable root login and configure basic ssh limits
 cat >>/etc/ssh/sshd_config <<EOL
 PermitRootLogin no
 MaxAuthTries 5
@@ -38,21 +46,28 @@ RSAAuthentication yes
 PubkeyAuthentication yes
 EOL
 
+#Install epel repo and update packages
 yum install -y epel-release 
 yum -y update
 yum install -y yum-cron fail2ban $PACKAGES
 
+#Enable automatic updates with yum-cron
+sed -i -e "s/apply_updates = no/apply_updates = yes/" /etc/yum/yum-cron.conf 
+
+
+#Use Google DNS
 echo "nameserver 8.8.8.8" > /etc/resolv-peerdns.conf
 echo "nameserver 8.8.4.4" >> /etc/resolv-peerdns.conf
 
-sed -i -e "s/apply_updates = no/apply_updates = yes/" /etc/yum/yum-cron.conf
-
+#Start firewall, cron, ntp sync
 systemctl enable firewalld.service
 systemctl start firewalld.service
 systemctl enable crond
+systemctl start crond
 systemctl enable ntpd
+systemctl start ntpd
 
-
+#Configure fail2ban jail
 cd /etc/fail2ban
 cp fail2ban.conf fail2ban.local
 cp jail.conf jail.local
@@ -60,6 +75,7 @@ sed -i -e "s/backend = auto/backend = systemd/" /etc/fail2ban/jail.local
 systemctl enable fail2ban
 
 
+#Secure TCP/IP, adjust TCP windows, enable ASLR and other mitagations
 cat >>/etc/sysctl.conf <<EOL
 net.ipv4.ip_forward = 0
 net.ipv4.conf.all.send_redirects = 0
@@ -92,6 +108,7 @@ EOL
 
 sysctl -p
 
+#Disable core dumps and unused modules
 touch /etc/security/limits.d/core.conf
 echo "* hard core 0" > /etc/security/limits.d/core.conf
 echo "install dccp /bin/false" > /etc/modprobe.d/dccp.conf
