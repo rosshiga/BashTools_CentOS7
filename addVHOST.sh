@@ -48,8 +48,7 @@ server {
         }
 }
 EOL
-
-
-echo -n "$DOMAIN is working" >> /usr/share/nginx/html/index.html
+certbot certonly --standalone -d $DOMAIN
+echo -n "$DOMAIN is working a vhost" >> /var/www/$DOMAIN/index.html
 
 systemctl start nginx
