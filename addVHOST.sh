@@ -33,6 +33,23 @@ server {
         server_name  $DOMAIN;
         root /var/www/$DOMAIN;
 
+ ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+        ssl_session_cache shared:SSL:20m;
+        ssl_session_timeout 60m;
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+        ssl_dhparam /etc/nginx/dh.pem;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_stapling on;
+        ssl_stapling_verify on;
+        ssl_trusted_certificate /etc/letsencrypt/live/$DOMAIN/chain.pem;
+       resolver 8.8.8.8 8.8.4.4;
+
+        add_header Strict-Transport-Security "max-age=31536000" always;
+
+
+
 
 
         location / {
