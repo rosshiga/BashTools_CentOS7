@@ -20,3 +20,5 @@ hostname > /usr/share/nginx/html/index.html
 echo -n " is working" >> /usr/share/nginx/html/index.html
 
 mkdir /var/www
+openssl dhparam 2048 -out /etc/nginx/dh.pem
+chmod 700 /etc/nginx/dh.pem
