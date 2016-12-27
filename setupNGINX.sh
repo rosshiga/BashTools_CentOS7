@@ -8,8 +8,7 @@ fi
 
 #Install
 yum -y install nginx certbot
-systemctl start nginx
-systemctl enable nginx
+
 
 #Allow 80, 443
 firewall-cmd --permanent --zone=public --add-service=http
