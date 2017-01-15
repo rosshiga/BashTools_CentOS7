@@ -33,8 +33,6 @@ server {
         server_name  $DOMAIN;
         root /var/www/$DOMAIN;
 
- ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
         ssl_session_cache shared:SSL:20m;
         ssl_session_timeout 60m;
         ssl_prefer_server_ciphers on;
@@ -46,7 +44,6 @@ server {
         ssl_trusted_certificate /etc/letsencrypt/live/$DOMAIN/chain.pem;
        resolver 8.8.8.8 8.8.4.4;
 
-        add_header Strict-Transport-Security "max-age=31536000" always;
 
 
 
