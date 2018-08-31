@@ -28,7 +28,6 @@ server {
     return 301 https://\$server_name\$request_uri;
 }
 server {
-        listen   80; ## listen for ipv4
         listen   443 ssl http2;
 
         ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
