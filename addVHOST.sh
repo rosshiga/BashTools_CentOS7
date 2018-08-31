@@ -17,12 +17,16 @@ fi
 
 
 
-
 systemctl stop nginx
 
 mkdir /var/www/$DOMAIN
 
 cat >>/etc/nginx/conf.d/$DOMAIN.conf<<EOL
+server {
+    listen      80;
+    server_name $DOMAIN;
+    return 301 https://\$server_name\$request_uri;
+}
 server {
         listen   80; ## listen for ipv4
         listen   443 ssl http2;
@@ -42,17 +46,11 @@ server {
         ssl_stapling on;
         ssl_stapling_verify on;
         ssl_trusted_certificate /etc/letsencrypt/live/$DOMAIN/chain.pem;
-       resolver 8.8.8.8 8.8.4.4;
-
-
-
-
-
+        resolver 8.8.8.8 8.8.4.4;
 
         location / {
                 index index.html index.htm;
         }
-
 
 
         location ~ /\. {
