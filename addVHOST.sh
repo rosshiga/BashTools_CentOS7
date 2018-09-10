@@ -39,7 +39,7 @@ server {
         ssl_session_cache shared:SSL:20m;
         ssl_session_timeout 60m;
         ssl_prefer_server_ciphers on;
-        ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:DH+3DES:!ADH:!AECDH:!MD5;
+        ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:!3DES:!ADH:!AECDH:!MD5;
         ssl_dhparam /etc/nginx/dh.pem;
         ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
         ssl_stapling on;
