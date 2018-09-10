@@ -41,7 +41,7 @@ server {
         ssl_prefer_server_ciphers on;
         ssl_ciphers ECDH+AESGCM:ECDH+AES256:ECDH+AES128:!3DES:!ADH:!AECDH:!MD5;
         ssl_dhparam /etc/nginx/dh.pem;
-        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_protocols TLSv1.1 TLSv1.2;
         ssl_stapling on;
         ssl_stapling_verify on;
         ssl_trusted_certificate /etc/letsencrypt/live/$DOMAIN/chain.pem;
